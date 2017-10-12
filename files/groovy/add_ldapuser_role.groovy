@@ -10,7 +10,7 @@ parsed_args = new JsonSlurper().parseText(args)
    //user.forEach { println it }
    users.each { 
       security.setUserRoles(it.userId, parsed_args.role)
-      security.securitySystem.updateUser(user)
+      security.securitySystem.updateUser(it)
    }
 //    security.setUserRoles(parsed_args.usernames, parsed_args.ldap_id, [parsed_args.role] )
 //} catch(UserNotFoundException ignored) {
