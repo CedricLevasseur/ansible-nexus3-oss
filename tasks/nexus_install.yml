@@ -287,6 +287,7 @@
     - create_repo_npm_group
     - create_repo_gitlfs_hosted
     - create_task
+    - add_ldapuser_role  
 
 - name: "Config nexus-backup shell cron"
   cron:
