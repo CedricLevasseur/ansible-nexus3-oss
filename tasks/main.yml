@@ -47,14 +47,6 @@
 - include: setup_user_each.yml
   with_items: "{{ nexus_local_users }}"
 
-- include: call_script.yml
-  vars:
-    script_name: add_ldapuser_role
-    args:
-      ldap_id: "{{ nexus_ldap_id }}"
-      role: "{{ nexus_role }}"
-      usernames: "{{ nexus_ldapadmin_username }}"
-
 - name: "Digest splited blob list var"
   include_vars: blob_vars.yml
   when: nexus_blob_split
@@ -188,3 +180,12 @@
 
 - include: create_task_each.yml
   with_items: "{{ nexus_scheduled_tasks }}"
+
+- include: call_script.yml
+  vars:
+    script_name: add_ldapuser_role
+    args:
+      ldap_id: "{{ nexus_ldap_id }}"
+      role: "{{ nexus_role }}"
+      usernames: "{{ nexus_ldapadmin_username }}"
+

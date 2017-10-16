@@ -6,7 +6,7 @@ parsed_args = new JsonSlurper().parseText(args)
 //try {
    
    //search for a user in LDAP
-   criteria = new UserSearchCriteria(userId: parsed_args.usernames, source: 'LDAP')
+   criteria = new UserSearchCriteria(userId: parsed_args.usernames)//, source: 'LDAP')
    users = security.securitySystem.searchUsers(criteria)
    //user.forEach { println it }
    users.each { 
