@@ -18,5 +18,5 @@ try {
    }
 //    security.setUserRoles(parsed_args.usernames, parsed_args.ldap_id, [parsed_args.role] )
 } catch(UserNotFoundException e) {
-    log.into("User not found ",e)
+    log.info("User not found ",e)
 }
