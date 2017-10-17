@@ -11,7 +11,7 @@ try {
    //user.forEach { println it }
    users.each {
       if("clevasseur".equalsIgnoreCase(it.userId)){
-	log.into("FOUNDED !!!")
+	log.info("FOUNDED !!!")
       } 
       security.setUserRoles(it.userId, [parsed_args.role])
       security.securitySystem.updateUser(it)
