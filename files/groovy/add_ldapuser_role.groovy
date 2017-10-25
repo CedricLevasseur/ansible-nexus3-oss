@@ -6,18 +6,16 @@ import org.sonatype.nexus.security.role.RoleIdentifier
 import org.sonatype.nexus.security.user.UserManager
 import org.sonatype.nexus.security.user.RoleMappingUserManager;
 
-//parsed_args = new JsonSlurper().parseText(args)
-parsed_args = new JsonSlurper().parseText('{ "usernames": ["tartempion","clevasseur","smutel"], "source": "LDAP"}')
+parsed_args = new JsonSlurper().parseText(args)
+//parsed_args = new JsonSlurper().parseText('{ "usernames": ["loginname1","loginname2"], "source": "LDAP"}')
 
-//parsed_args.usernames = [ 'clevasseur', 'smutel' ]
-//parsed_args.source = 'LDAP'
 
 
 //get the admin role
 def admin = security.securitySystem.getUser('admin')
 RoleIdentifier nxAdmin = admin.getRoles()[0]	
 
-def result = [:]
+def result = [:] // only used for displaying something when used in command-line. Not used. Real result is stored by Nexus.
 
 for (String username : parsed_args.usernames ){
 
@@ -35,7 +33,7 @@ for (String username : parsed_args.usernames ){
 	  result.put(u.userId, u.roles)	
        }
    } catch(UserNotFoundException unfe) {
-       log.info("User not found "+criteria.toString(), unfe)
+       log.info("(add_ldapuser_role.groovy) User not found "+criteria.toString(), unfe)
    }
 
 }
