@@ -7,65 +7,36 @@ import org.sonatype.nexus.security.user.UserManager
 import org.sonatype.nexus.security.user.RoleMappingUserManager;
 
 //parsed_args = new JsonSlurper().parseText(args)
-try {
+parsed_args = new JsonSlurper().parseText('{ "usernames": ["tartempion","clevasseur","smutel"], "source": "LDAP"}')
 
-   def admin = security.securitySystem.getUser('admin')
-   RoleIdentifier nxAdmin = admin.getRoles()[0]	
+//parsed_args.usernames = [ 'clevasseur', 'smutel' ]
+//parsed_args.source = 'LDAP'
 
-   
-   //search for a user in LDAP
-//   criteria = new UserSearchCriteria(userId: parsed_args.usernames, source: "LDAP")
-   criteria = new UserSearchCriteria(userId: "clevasseur", source: "LDAP")
 
-   users = security.securitySystem.searchUsers(criteria)
-   //user.forEach { println it }
-   //return users.toString()+" "+users[0].getUserId()
-//   return users[0].class.package.name + " "+ users.size()+" "+users.toString()
-   for(User u : users){
-   //UserManager userManager = security.securitySystem.getUserManager(admin.getSource());
-   UserManager userManager = security.securitySystem.getUserManager(u.getSource());
-//   userManager.setUsersRoles(u.userId, admin.getSource(), [ nxAdmin ].toSet())
+//get the admin role
+def admin = security.securitySystem.getUser('admin')
+RoleIdentifier nxAdmin = admin.getRoles()[0]	
 
-/*        try {
-          RoleMappingUserManager roleMappingUserManager = (RoleMappingUserManager) userManager;
-          roleMappingUserManager.setUsersRoles(
-              u.getUserId(),
-              u.getSource(),
-              nxAdmin
-          );
-        }catch(Exception e){
-	  return e.toString()
-        }	
-*/
-    	
-    u.roles = [ nxAdmin ] // = roleIds.collect{ new RoleIdentifier(DEFAULT_SOURCE, it)}
-//   security.securitySystem.updateUser(u)
-//    return u.toString()  	
-    User userModified = security.setUserRoles('admin' /*u.userId*/, [ 'nx-admin' ]) 
-//    return userModified.getRoles()
+def result = [:]
 
-      if("clevasseur".equalsIgnoreCase(u.userId)){
-	log.info("FOUNDED !!! " +u.userId )
+for (String username : parsed_args.usernames ){
 
-//       return security.securitySystem.listRoles('LDAP')
-      } 
+   try {
+       //search for a user in LDAP (or more)
+       //   criteria = new UserSearchCriteria(userId: parsed_args.usernames, source: "LDAP")
+       criteria = new UserSearchCriteria(userId: username, source: parsed_args.source )
+       usersFounded = security.securitySystem.searchUsers(criteria)
 
-      security.securitySystem.setUsersRoles(u.userId, 'LDAP', [nxAdmin].toSet())
-      return u	
-      //u.addRole(nxAdmin);
-
-//      security.securitySystem.setUsersRoles(u.userId, 'LDAP', [nxAdmin].toSet())
-//      security.securitySystem.updateUser(u)
+       //set the nx-admin role for each user founded
+       for(User u : usersFounded){
+          if(! u.roles.toString().contains('nx-admin')){
+               security.securitySystem.setUsersRoles(u.userId, parsed_args.source, [nxAdmin].toSet())
+          }
+	  result.put(u.userId, u.roles)	
+       }
+   } catch(UserNotFoundException unfe) {
+       log.info("User not found "+criteria.toString(), unfe)
    }
-//    security.setUserRoles(parsed_args.usernames, parsed_args.ldap_id, [parsed_args.role] )
 
-return users[0].getRoles()	
-//return "OK"
-
-} catch(UserNotFoundException unfe) {
-    log.info("User not found "+criteria.toString(), unfe)
-    return "User not found "+criteria.toString()+" "+unfe
 }
-
-
-return "FAIL" 
+return result	
