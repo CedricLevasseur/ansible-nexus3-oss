@@ -10,3 +10,4 @@
     status_code: 200,204
     force_basic_auth: yes
     body: "{{ args | to_json }}"
+    timeout: 60 
