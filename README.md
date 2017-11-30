@@ -401,4 +401,4 @@ GNU GPLv3
 Author Information
 ------------------
 
-See https://github.com/savoirfairelinux/ansible-nexus3-oss
+See https://github.com/savoirfairelinux/ansible-nexus3-oss 
